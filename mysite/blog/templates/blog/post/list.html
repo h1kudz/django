@@ -1,0 +1,29 @@
+{% extends "blog/base.html" %}
+{% block title %}My Blog{% endblock %}
+{% block content %}
+ <h1>Список блоков</h1>
+ <table class = "table"> 
+    <tr>
+        <th>    </th>
+        <th>  Имя поста </th>
+        <th>Дата поста </th>
+         <th> Текст</th>  
+    </tr>
+    <tbody> 
+    
+    {% for post in posts %}
+        <td> </td>
+        <td> <a href="{% url 'blog:post_detail' post.id %}">
+            {{ post.title }}
+         </a> </td>
+         <td>
+         <p class="date">
+            Публикация {{ post.publish }} by {{ post.author }}
+         </p> </td>
+        <td>  {{ post.body|truncatewords:30|linebreaks }}</td>
+    {% endfor %}
+
+</tbody>
+
+</table>
+{% endblock %}
