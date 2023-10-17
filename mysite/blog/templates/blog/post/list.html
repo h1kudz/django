@@ -1,7 +1,13 @@
 {% extends "blog/base.html" %}
+{% load blog_tags %}
+
 {% block title %}My Blog{% endblock %}
 {% block content %}
- <h1>Список блоков</h1>
+ <h1>Список блогов</h1>
+    {% if tag %}
+        <h2>Posts tagged with "{{ tag.name }}"</h2>
+    {% endif %}
+
  <table class = "table"> 
     <tr>
         <th>    </th>
@@ -9,21 +15,34 @@
         <th>Дата поста </th>
          <th> Текст</th>  
     </tr>
+    {% for post in posts %}
+
     <tbody> 
     
-    {% for post in posts %}
         <td> </td>
-        <td> <a href="{% url 'blog:post_detail' post.id %}">
+        <td> <a href="{{ post.get_absolute_url }}">
             {{ post.title }}
          </a> </td>
          <td>
-         <p class="date">
+        <p class="tags">
+            Tags: 
+            {% for tag in post.tags.all %}
+                <a href="{% url "blog:post_list_by_tag" tag.slug %}">
+                    {{ tag.name }}
+                </a>
+            {% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        </p>
+
+        <p class="date">
             Публикация {{ post.publish }} by {{ post.author }}
          </p> </td>
-        <td>  {{ post.body|truncatewords:30|linebreaks }}</td>
-    {% endfor %}
+        <td>   {{ post.body|markdown|truncatewords_html:30 }}
+        </td>
 
 </tbody>
+{% endfor %}
 
 </table>
+    {% include "pagination.html" with page=posts %}
 {% endblock %}
